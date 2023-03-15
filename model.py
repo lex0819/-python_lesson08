@@ -24,3 +24,22 @@ def add_contact(file_name=FILE_NAME) -> dict:
         writer = csv.writer(file)
         writer.writerow([surname, name, phone])
     return {'surname': surname, 'name': name, 'phone': phone}
+
+
+def find_contact() -> list:
+    surname = input("enter surname: ")
+    name = input("enter name: ")
+
+    data_file = read_phonebook(file_name=FILE_NAME)
+    # print(data_file)
+    if surname and name:
+        data = list(
+            filter(lambda x: x['surname'].lower() == surname.lower() and x['name'].lower() == name.lower(), data_file))
+    elif surname and not name:
+        data = list(
+            filter(lambda x: x['surname'].lower() == surname.lower(), data_file))
+    elif name and not surname:
+        data = list(
+            filter(lambda x: x['name'].lower() == name.lower(), data_file))
+
+    return data

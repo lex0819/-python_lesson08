@@ -15,5 +15,10 @@ def run():
             view.show_added(data)
         elif int(answer) == 3:
             data = model.find_contact()
+            # print(data)
+            view.show_found(data)
         elif int(answer) == 4:
+            data = model.remove_contact()
+            view.show_removed(data)
+        elif int(answer) == 5:
             break
