@@ -1,19 +1,23 @@
+import copy
 import csv
 FILE_NAME = 'phonebook.csv'
 
 
 def read_phonebook(file_name=FILE_NAME) -> list:
-    data = []
+    data = list()
     with open(file_name, 'r', encoding='utf-8') as file:
-        reader = csv.reader(file)
-        for line in reader:
+        reader = csv.DictReader(file)
+        for row in list(reader):
             data.append(
-                {'surname': line[0],
-                 'name': line[1],
-                 'phone': line[2]
-                 }
-            )
+                {'surname': row['surname'], 'name': row['name'], 'phone': row['phone']})
     return data
+
+
+def rewrite_phonebook(data_file: list, file_name=FILE_NAME):
+    with open(file_name, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=data_file[0])
+        writer.writeheader()
+        writer.writerows(data_file)
 
 
 def add_contact(file_name=FILE_NAME) -> dict:
@@ -29,17 +33,25 @@ def add_contact(file_name=FILE_NAME) -> dict:
 def find_contact() -> list:
     surname = input("enter surname: ")
     name = input("enter name: ")
-
-    data_file = read_phonebook(file_name=FILE_NAME)
-    # print(data_file)
-    if surname and name:
-        data = list(
-            filter(lambda x: x['surname'].lower() == surname.lower() and x['name'].lower() == name.lower(), data_file))
-    elif surname and not name:
-        data = list(
-            filter(lambda x: x['surname'].lower() == surname.lower(), data_file))
-    elif name and not surname:
-        data = list(
-            filter(lambda x: x['name'].lower() == name.lower(), data_file))
-
+    data = []
+    data_file = read_phonebook()
+    if len(data_file) > 0:
+        if surname and name:
+            data = list(
+                filter(lambda x: x['surname'].lower() == surname.lower() and x['name'].lower() == name.lower(), data_file))
+        elif surname and not name:
+            data = list(
+                filter(lambda x: x['surname'].lower() == surname.lower(), data_file))
+        elif name and not surname:
+            data = list(
+                filter(lambda x: x['name'].lower() == name.lower(), data_file))
     return data
+
+
+def remove_contact(data: list):
+    for item in data:
+        data_file = read_phonebook()
+        if len(data_file):
+            data_res = list(filter(lambda x: x['surname'].lower() != item['surname'].lower(
+            ) and x['name'].lower() != item['name'].lower(), data_file))
+            rewrite_phonebook(data_res)
