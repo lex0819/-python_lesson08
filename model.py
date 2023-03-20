@@ -1,4 +1,3 @@
-import copy
 import csv
 FILE_NAME = 'phonebook.csv'
 
